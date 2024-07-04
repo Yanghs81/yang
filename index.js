@@ -9,12 +9,11 @@ const session = require("express-session");
 const dotenv = require("dotenv");
 const FileStore = require("session-file-store")(session);
 const bcrypt = require("bcrypt");
-
 const app = express();
-const port = 5000;
 
 dotenv.config();
 
+const port = process.env.PORT;
 const corsOptions = {
   origin: "http://localhost:3000", //cors 설정 클라이언트의 주소 사전 허가
   METHODS: ["get", "post"],

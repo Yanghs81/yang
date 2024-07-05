@@ -64,7 +64,7 @@ const db = mysql.createConnection({
   // password: process.env.PASSWORD,
   // database: process.env.DB,
 });
-db.connect((err) => {
+mariadb.connect((err) => {
   if (err) {
     console.log("MySQL error ==>", err);
     console.error("사유?");

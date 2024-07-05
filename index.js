@@ -58,13 +58,13 @@ app.use(
 // DB 연결
 // const db = mysql.createConnection();
 const db = mysql.createConnection({
-  mariadb: 3306,
+  host: HOST,
   // host: process.env.HOST,
   // user: process.env.USER,
   // password: process.env.PASSWORD,
   // database: process.env.DB,
 });
-mariadb.connect((err) => {
+db.connect((err) => {
   if (err) {
     console.log("MySQL error ==>", err);
     console.error("사유?");

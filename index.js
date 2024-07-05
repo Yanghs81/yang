@@ -13,7 +13,7 @@ const app = express();
 
 dotenv.config();
 
-const port = process.env.PORT;
+const sever_port = process.env.SERVER_PORT;
 const corsOptions = {
   origin: "http://localhost:3000", //cors 설정 클라이언트의 주소 사전 허가
   METHODS: ["get", "post"],
@@ -59,6 +59,7 @@ app.use(
 // const db = mysql.createConnection();
 const db = mysql.createConnection({
   host: process.env.HOST,
+  port: process.env.PORT,
   user: process.env.USER,
   password: process.env.PASSWORD,
   database: process.env.DB,
@@ -416,6 +417,6 @@ app.post("/photo/:id/like", (req, res) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`서버가 포트 ${port}에서 실행 중입니다.`);
+app.listen(sever_port, () => {
+  console.log(`서버가 포트 ${sever_port}에서 실행 중입니다.`);
 });

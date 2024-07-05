@@ -64,6 +64,8 @@ const db = mysql.createConnection({
 });
 db.connect((err) => {
   if (err) {
+    console.log("MySQL error ==>", err);
+    console.error("사유?");
     throw err;
   }
   console.log("MySQL connected...");

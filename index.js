@@ -58,7 +58,7 @@ app.use(
 // DB 연결
 // const db = mysql.createConnection();
 const db = mysql.createConnection({
-  host: mariadb,
+  mariadb: 3306,
   // host: process.env.HOST,
   // user: process.env.USER,
   // password: process.env.PASSWORD,

@@ -105,6 +105,7 @@ app.get("/", (req, res) => {
 app.post("/signup", (req, res) => {
   async function regist() {
     const { email, password, name, nickname } = req.body;
+    console.log("req.body---", email, password, name, nickname);
     const enc_password = await hashPassword(password);
     const sql =
       "INSERT INTO TB_users (user_email, user_password, user_name, nick_name, special_code) VALUES (?, ?, ?, ?, ?)";

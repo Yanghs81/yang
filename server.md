@@ -52,7 +52,41 @@
 6. index.js에 API서버 로직 구현
 
 7. index.js 기동
+
    - terminal 에서 node index.js 로 기동
    - ctl + C 로 해제,
    - API서버 수정시마다 기동/해제 해줘야 로직 반영됨
    - 기동/해제 자동화 : Nodemon 모듈 설치
+
+8. cloudtype maria db 서비스 올리기
+
+   - mariadb 서비스 생성
+     - service name = mariasvc (host name으로 사용됨. 이름에 언더바 사용은 안되고 '-'사용은 됨)
+     - root pwd = pwd는 .env 에 설정 (지정안하면 자동생성이됨, 자동생성이면 내가 모르잖아?)
+     - 배포하기 클릭후 서비스로 이동하여 실행로그 확인
+   - 실행로그에 서비스가 생성완료 조회되면 터미널페이지에서 db, user 생성하기
+     - root 로 들어가기 : pwd는 service 생성시 지정했던 패스워드를 입력 (1234)
+     - db 생성 : CREATE DATABASE picdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; 참조-CREATE DATABASE {DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+     - uesr 생성 : CREATE USER yang@mariasvc IDENTIFIED BY '1234'; 참조-CREATE USER {USER_NAME}@{HOST_NAME} IDENTIFIED BY '{PASSWORD}';
+     - user 권한 부여 : GRANT ALL PRIVILEGES ON picdb._ TO yang@mariasvc; 참조-GRANT ALL PRIVILEGES ON {DB_NAME}._ TO {USER_NAME}@{HOST_NAME};
+
+9. 테이블 만들기
+
+   - DB tool : heidiSQL 사용
+   - seeeion 만들기
+     - 호스트명 / IP : svc.sel5.cloudtype.app, cloudtype > DB서비스 > 연결 : 외부연결(svc.sel5.cloudtype.app:30738) 의 :앞자리가 호스트명이 됨
+     - 사용자 : root
+     - 암호 : root 패스워드
+     - 포트 : 30738, 외부연결(svc.sel5.cloudtype.app:30738) 의 :뒷자리 30738 가 포트번호가 됨, DB 서비스 생성시마다 포트번호 상이함
+   - 원하는 테이블 쿼리로 생성 ex. CREATE TABLE [테이블명] (컬럼들...)
+
+10. cloudtype 서버 서비스 올리기
+
+- Node js 서비스 생성
+  - git 저장소 설정 : yang, branch는 메인의 이름 설정
+  - Node js 버전 선택 : v20, 서버 터미널에서 node -v 하면 v 20. 2....식으로 조회되는 버전 선택
+  - 환경변수 세팅 : .env, 탐색기에서 API서버 프로젝트에 있는 .env파일을 클릭으로 끌어서 옮겨줌, 변경필요시 세팅화면에 직접 입력
+  - port : 5000, API서버 포트
+  - Install command : npm ci, package-lock.json을 인스톨함, 공란시 package.json이 인스톨됨
+  - Start command : index.js, API서버프로그램을 지정해야 함
+  - 배포하기 클릭후 서비스로 이동하여 실행로그 확인

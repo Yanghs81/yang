@@ -170,6 +170,7 @@ app.post("/login", cors(corsOptions), (req, res) => {
         nickName: user.nick_name,
       };
       const data = req.session;
+      console.log("data---", data);
       res.status(200).send(data);
     });
   });

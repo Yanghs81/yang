@@ -17,6 +17,7 @@ const sever_port = process.env.SERVER_PORT;
 
 const corsOptions = {
   origin: "http://localhost:3000", //cors 설정 클라이언트의 주소 사전 허가
+  optionsSuccessStatus: 200,
   METHODS: ["get", "post"],
   credentials: true, // 쿠키를 포함한 요청을 허용
 };

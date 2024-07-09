@@ -15,11 +15,11 @@ dotenv.config();
 
 const sever_port = process.env.SERVER_PORT;
 
-const corsOptions = {
-  origin: "http://192.168.1.2:3000", //cors 설정 클라이언트의 주소 사전 허가
-  METHODS: ["get", "post"],
-  credentials: true, // 쿠키를 포함한 요청을 허용
-};
+// const corsOptions = {
+//   origin: "http://192.168.1.2:3000", //cors 설정 클라이언트의 주소 사전 허가
+//   METHODS: ["get", "post"],
+//   credentials: true, // 쿠키를 포함한 요청을 허용
+// };
 // app.use(cors(corsOptions));
 app.use(cors());
 
@@ -27,8 +27,9 @@ app.use(bodyParser.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 //비번 암호화
-const saltRounds = process.env.SALTROUNDS;
+
 async function hashPassword(password) {
+  const saltRounds = process.env.SALTROUNDS;
   try {
     const hash = await bcrypt.hash(password, saltRounds);
     return hash;
@@ -72,7 +73,7 @@ db.connect((err) => {
   }
   console.log("MySQL connected...");
 });
-console.error("111");
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
@@ -86,7 +87,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-console.error("222");
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // 홈

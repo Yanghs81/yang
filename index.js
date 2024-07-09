@@ -28,11 +28,10 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 //비번 암호화
 
+const saltRounds = process.env.SALTROUNDS;
 async function hashPassword(password) {
-  const saltnum = process.env.SALTROUNDS;
-  const salt = bcrypt.genSaltSync(saltnum);
   try {
-    const hash = await bcrypt.hashSync(password, salt);
+    const hash = await bcrypt.hash(password, saltRounds);
     return hash;
   } catch (err) {
     console.error("Error hashing password:", err);

@@ -25,6 +25,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/img", express.static(path.join(__dirname, "img")));
 
 //비번 암호화
 
@@ -103,9 +104,7 @@ const SV_URL = "https://port-0-yang-svc-ly6qcjdff54bee71.sel5.cloudtype.app";
 // });
 
 app.get("/", cors(corsOptions), (req, res) => {
-  const filePath = path.join(__dirname, "./img", "backimg.jpg");
-  const photo = { url: `${SV_URL}${filePath}` };
-  console.log(SV_URL, filePath);
+  const photo = { url: `${SV_URL}/img/backimg.jpg` };
   res.status(200).json(photo);
 });
 

@@ -91,7 +91,7 @@ const upload = multer({ storage: storage });
 // 홈
 ///////////////////////////////////////////////////////////////////////////////////////
 app.get("/", (req, res) => {
-  const filePath = path.join(__dirname, "./src/img", "backimg.jpg");
+  const filePath = path.join(__dirname, "./img", "backimg.jpg");
   res.sendFile(filePath, (err) => {
     if (err) {
       console.log(err);

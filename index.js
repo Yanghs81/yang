@@ -14,15 +14,17 @@ const app = express();
 dotenv.config();
 
 const sever_port = process.env.SERVER_PORT;
+
 const corsOptions = {
   origin: "http://192.168.1.2:3000", //cors 설정 클라이언트의 주소 사전 허가
   METHODS: ["get", "post"],
   credentials: true, // 쿠키를 포함한 요청을 허용
 };
+// app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use(cors(corsOptions));
 
 //비번 암호화
 const saltRounds = process.env.SALTROUNDS;

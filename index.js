@@ -149,16 +149,19 @@ app.post("/login", cors(corsOptions), (req, res) => {
   const sql = "SELECT * FROM TB_users WHERE user_email = ?";
   db.query(sql, [email], async (err, results) => {
     if (err) {
+      console.log("db.query---", email, password);
       return res.status(500).send(err);
     }
 
     if (results.length === 0) {
+      console.log("results.length---", email, password);
       return res.status(401).send("Invalid email or password");
     }
 
     const user = results[0];
     const isMatch = await bcrypt.compare(password, user.user_password);
     if (!isMatch) {
+      console.log("isMatch---", email, password);
       return res.status(401).send("password not matched");
     }
     req.session.save(() => {

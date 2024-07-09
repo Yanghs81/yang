@@ -27,7 +27,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 //비번 암호화
 
-const saltRounds = process.env.SALTROUNDS;
+const saltRounds = parseInt(process.env.SALTROUNDS, 10); // 10진 숫자로 변환
 async function hashPassword(password) {
   try {
     const hash = await bcrypt.hash(password, saltRounds);

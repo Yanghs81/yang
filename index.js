@@ -87,18 +87,25 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+const SV_URL = "https://port-0-yang-svc-ly6qcjdff54bee71.sel5.cloudtype.app";
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // 홈
 ///////////////////////////////////////////////////////////////////////////////////////
+// app.get("/", cors(corsOptions), (req, res) => {
+//   const filePath = path.join(__dirname, "./img", "backimg.jpg");
+//   res.sendFile(filePath, (err) => {
+//     if (err) {
+//       console.log(err);
+//       res.status(500).send("File not found", err);
+//     }
+//   });
+// });
+
 app.get("/", cors(corsOptions), (req, res) => {
   const filePath = path.join(__dirname, "./img", "backimg.jpg");
-  res.sendFile(filePath, (err) => {
-    if (err) {
-      console.log(err);
-      res.status(500).send("File not found", err);
-    }
-  });
+  const photo = { url: `${SV_URL}/${filePath}` };
+  res.status(200).json(photo);
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +115,7 @@ app.post("/signup", cors(corsOptions), (req, res) => {
   console.log("Request Origin:", req.get("origin")); // 클라이언트의 출처를 콘솔에 출력
   async function regist() {
     const { email, password, name, nickname } = req.body;
-    console.log("req.body---", email, password, name, nickname);
+    console.log("회원가입---", email, nickname);
     const enc_password = await hashPassword(password);
     console.log("hashPassword---", enc_password);
     const sql =
@@ -118,10 +125,8 @@ app.post("/signup", cors(corsOptions), (req, res) => {
       [email, enc_password, name, nickname, "00"],
       (err, result) => {
         if (err) {
-          console.log("db err---", err);
           return res.status(500).send(err);
         }
-        console.log("등록 성공---");
         res.status(200).send({
           message: "사용자 등록 성공",
           userId: result.insertId,
@@ -140,7 +145,7 @@ app.post("/login", cors(corsOptions), (req, res) => {
     return res.status(400).send("Already logged in");
   }
   const { email, password } = req.body;
-
+  console.log("로그인---", email, nickname);
   const sql = "SELECT * FROM TB_users WHERE user_email = ?";
   db.query(sql, [email], async (err, results) => {
     if (err) {
@@ -253,7 +258,7 @@ app.get("/popularPhotos", cors(corsOptions), (req, res) => {
 
       const photosWithUrls = results.map((photo) => ({
         ...photo,
-        url: `http://localhost:5000/uploads/${photo.file_name}`,
+        url: `${SV_URL}/uploads/${photo.file_name}`,
       }));
 
       res.status(200).json({
@@ -286,7 +291,7 @@ app.get("/recentPhotos", cors(corsOptions), (req, res) => {
 
       const photosWithUrls = results.map((photo) => ({
         ...photo,
-        url: `http://localhost:5000/uploads/${photo.file_name}`,
+        url: `${SV_URL}/uploads/${photo.file_name}`,
       }));
 
       res.status(200).json({
@@ -331,7 +336,7 @@ app.post("/photo/:id", cors(corsOptions), (req, res) => {
         result1[0].user_likes = heart;
         const photo = {
           ...result1[0],
-          url: `http://localhost:5000/uploads/${result1[0].file_name}`,
+          url: `${SV_URL}/uploads/${result1[0].file_name}`,
         };
         res.status(200).json(photo);
       });
@@ -339,7 +344,7 @@ app.post("/photo/:id", cors(corsOptions), (req, res) => {
     } else {
       const photo = {
         ...result1[0],
-        url: `http://localhost:5000/uploads/${result1[0].file_name}`,
+        url: `${SV_URL}/uploads/${result1[0].file_name}`,
       };
       res.status(200).json(photo);
     }

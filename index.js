@@ -109,6 +109,7 @@ app.post("/signup", (req, res) => {
     const { email, password, name, nickname } = req.body;
     console.log("req.body---", email, password, name, nickname);
     const enc_password = await hashPassword(password);
+    console.log("hashPassword---", enc_password);
     const sql =
       "INSERT INTO TB_users (user_email, user_password, user_name, nick_name, special_code) VALUES (?, ?, ?, ?, ?)";
     db.query(
@@ -116,8 +117,10 @@ app.post("/signup", (req, res) => {
       [email, enc_password, name, nickname, "00"],
       (err, result) => {
         if (err) {
+          console.log("db err---", err);
           return res.status(500).send(err);
         }
+        console.log("등록 성공---");
         res.status(200).send({
           message: "사용자 등록 성공",
           userId: result.insertId,

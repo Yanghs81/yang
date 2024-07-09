@@ -103,8 +103,8 @@ const SV_URL = "https://port-0-yang-svc-ly6qcjdff54bee71.sel5.cloudtype.app";
 // });
 
 app.get("/", cors(corsOptions), (req, res) => {
-  const filePath = path.join(__dirname, "/img", "backimg.jpg");
-  const photo = { url: `${SV_URL}/${filePath}` };
+  const filePath = path.join(__dirname, "./img", "backimg.jpg");
+  const photo = { url: `${SV_URL}${filePath}` };
   console.log(SV_URL, filePath);
   res.status(200).json(photo);
 });

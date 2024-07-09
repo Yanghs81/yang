@@ -145,7 +145,7 @@ app.post("/login", cors(corsOptions), (req, res) => {
     return res.status(400).send("Already logged in");
   }
   const { email, password } = req.body;
-  console.log("로그인---", email, nickname);
+  console.log("로그인---", email, password);
   const sql = "SELECT * FROM TB_users WHERE user_email = ?";
   db.query(sql, [email], async (err, results) => {
     if (err) {

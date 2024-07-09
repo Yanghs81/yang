@@ -25,7 +25,6 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(cors(corsOptions));
 
 //비번 암호화
-
 const saltRounds = process.env.SALTROUNDS;
 async function hashPassword(password) {
   try {
@@ -71,7 +70,7 @@ db.connect((err) => {
   }
   console.log("MySQL connected...");
 });
-
+console.error("111");
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
@@ -85,6 +84,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+console.error("222");
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // 홈

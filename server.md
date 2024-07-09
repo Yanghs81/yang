@@ -87,7 +87,7 @@
 - Node js 서비스 생성
   - git 저장소 설정 : yang, branch는 메인의 이름 설정
   - Node js 버전 선택 : v20, 서버 터미널에서 node -v 하면 v 20. 2....식으로 조회되는 버전 선택
-  - 환경변수 세팅 : .env, 탐색기에서 API서버 프로젝트에 있는 .env파일을 클릭으로 끌어서 옮겨줌, 변경필요시 세팅화면에 직접 입력
+  - 환경변수 세팅 : .env, 탐색기에서 API서버 프로젝트에 있는 .env파일을 클릭으로 끌어서 옮겨줌, 변경필요시 세팅화면에 직접 입력, 503에러 지속되다가 user를 root로 입력하여 해결됨
   - port : 5000, API서버 포트
   - Install command : npm ci, package-lock.json을 인스톨함, 공란시 package.json이 인스톨됨
   - Start command : index.js, API서버프로그램을 지정해야 함

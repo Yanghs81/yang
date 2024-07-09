@@ -105,6 +105,7 @@ app.get("/", (req, res) => {
 // 회원 가입
 ///////////////////////////////////////////////////////////////////////////////////////
 app.post("/signup", (req, res) => {
+  console.log("Request Origin:", req.get("origin")); // 클라이언트의 출처를 콘솔에 출력
   async function regist() {
     const { email, password, name, nickname } = req.body;
     console.log("req.body---", email, password, name, nickname);

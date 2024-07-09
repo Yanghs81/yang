@@ -422,9 +422,6 @@ app.post("/photo/:id/like", (req, res) => {
   });
 });
 
-app.listen(
-  "https://port-0-yang-svc-ly6qcjdff54bee71.sel5.cloudtype.app",
-  () => {
-    console.log(`서버가 포트 ${sever_port}에서 실행 중입니다.`);
-  }
-);
+app.listen(sever_port, () => {
+  console.log(`서버가 포트 ${sever_port}에서 실행 중입니다.`);
+});

@@ -127,6 +127,6 @@
     - expiration 도 아무거나.. 나는 30일
     - Select scopes 에서 repo와 admin:public_key 체크박스 하고 맨아래 초록'Generate token' 클릭
     - 네모박스 안에 생성된 token 복사 (이하 1번과 비슷)
-    - Github 저장소에서 Settings 클릭 (이하 1번과 비슷)
+    - Github 저장소에서 Settings 클릭
     - Name은 좀전에 만든 deploy.yml의 ghtoken행에 적혀있는 이름과 동일하게 입력
     - 내용에는 복사한 API값 붙여넣기 하고 초록'Add secret' 클릭

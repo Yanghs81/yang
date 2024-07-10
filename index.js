@@ -287,6 +287,7 @@ app.get("/recentPhotos", (req, res) => {
         ...photo,
         url: `${SV_URL}/uploads/${photo.file_name}`,
       }));
+
       console.log("photosWithUrls==", photosWithUrls);
       res.status(200).json({
         photos: photosWithUrls,
@@ -302,13 +303,15 @@ app.get("/recentPhotos", (req, res) => {
 app.post("/photo/:id", (req, res) => {
   const { id } = req.params;
   const { email } = req.body;
-
+  console.log("11==", id); //---------------------------
   const sql1 = "SELECT * FROM TB_photos WHERE file_name = ?";
   db.query(sql1, [id], (err, result1) => {
     if (err) {
+      console.log("22=="); //---------------------------
       return res.status(500).send(err);
     }
     if (result1.length === 0) {
+      console.log("33=="); //---------------------------
       return res.status(404).send("사진을 찾을 수 없습니다.");
     }
 
@@ -318,8 +321,10 @@ app.post("/photo/:id", (req, res) => {
         "SELECT * FROM TB_likesdetail WHERE (user_email = ? && file_name = ?)";
       db.query(sql2, [email, id], (err, result2) => {
         if (err) {
+          console.log("44=="); //---------------------------
           return res.status(500).send(err);
         }
+        console.log("55=="); //---------------------------
         let heart = false;
 
         if (result2.length === 0) {
@@ -332,6 +337,7 @@ app.post("/photo/:id", (req, res) => {
           ...result1[0],
           url: `${SV_URL}/uploads/${result1[0].file_name}`,
         };
+        console.log("66==", photo); //---------------------------
         res.status(200).json(photo);
       });
 

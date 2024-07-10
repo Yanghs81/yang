@@ -289,48 +289,42 @@ app.get("/recentPhotos", (req, res) => {
 app.post("/photo/:id", (req, res) => {
   const { id } = req.params;
   const { email } = req.body;
-  console.log("11==", id); //---------------------------
+  console.log("11==", email, id); //---------------------------
   const sql1 = "SELECT * FROM TB_photos WHERE file_name = ?";
   db.query(sql1, [id], (err, result1) => {
     if (err) {
-      console.log("22=="); //---------------------------
       return res.status(500).send(err);
     }
     if (result1.length === 0) {
-      console.log("33=="); //---------------------------
       return res.status(404).send("사진을 찾을 수 없습니다.");
     }
-    console.log("44==", id); //---------------------------
+    console.log("사진있음==", result1.length, "장"); //---------------------------
 
     // 로그인시 좋아요 정보 가져오기
     if (email) {
       const sql2 =
         "SELECT * FROM TB_likesdetail WHERE (user_email = ? && file_name = ?)";
       db.query(sql2, [email, id], (err, result2) => {
-        if (err) {
-          console.log("55=="); //---------------------------
-          return res.status(500).send(err);
-        }
-        console.log("66=="); //---------------------------
         let heart = false;
+        if (err) {
+          heart = false;
+        }
 
         if (result2.length === 0) {
-          heart = false;
-          console.log("77==", photo); //---------------------------
+          heart = false; // 자료없으면 false
         } else {
-          heart = result2[0].user_lik;
-          console.log("88==", photo); //---------------------------es;
+          heart = result2[0].user_likes; // 자료있으면 하트여부 가져옴
         }
         result1[0].user_likes = heart;
         const photo = {
           ...result1[0],
           url: `${SV_URL}/uploads/${result1[0].file_name}`,
         };
-        console.log("99==", photo); //---------------------------
-        res.status(200).json(photo);
+
+        return res.status(200).json(photo);
       });
-      console.log("100=="); //---------------------------
-      // 비 로그인이면
+
+      // 비 로그인이면 하트 표시 건너뜀
     } else {
       const photo = {
         ...result1[0],

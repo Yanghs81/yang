@@ -93,16 +93,6 @@ const SV_URL = "https://port-0-yang-svc-ly6qcjdff54bee71.sel5.cloudtype.app";
 ///////////////////////////////////////////////////////////////////////////////////////
 // 홈
 ///////////////////////////////////////////////////////////////////////////////////////
-// app.get("/", cors(corsOptions), (req, res) => {
-//   const filePath = path.join(__dirname, "./img", "backimg.jpg");
-//   res.sendFile(filePath, (err) => {
-//     if (err) {
-//       console.log(err);
-//       res.status(500).send("File not found", err);
-//     }
-//   });
-// });
-
 app.get("/", (req, res) => {
   const photo = { url: `${SV_URL}/img/backimg.jpg` };
   res.status(200).json(photo);
@@ -112,12 +102,9 @@ app.get("/", (req, res) => {
 // 회원 가입
 ///////////////////////////////////////////////////////////////////////////////////////
 app.post("/signup", (req, res) => {
-  console.log("Request Origin:", req.get("origin")); // 클라이언트의 출처를 콘솔에 출력
   async function regist() {
     const { email, password, name, nickname } = req.body;
-    console.log("회원가입---", email, nickname);
     const enc_password = await hashPassword(password);
-    console.log("hashPassword---", enc_password);
     const sql =
       "INSERT INTO TB_users (user_email, user_password, user_name, nick_name, special_code) VALUES (?, ?, ?, ?, ?)";
     db.query(
@@ -288,7 +275,6 @@ app.get("/recentPhotos", (req, res) => {
         url: `${SV_URL}/uploads/${photo.file_name}`,
       }));
 
-      console.log("photosWithUrls==", photosWithUrls);
       res.status(200).json({
         photos: photosWithUrls,
         total: totalResults[0].count,
@@ -314,6 +300,7 @@ app.post("/photo/:id", (req, res) => {
       console.log("33=="); //---------------------------
       return res.status(404).send("사진을 찾을 수 없습니다.");
     }
+    console.log("44==", id); //---------------------------
 
     // 로그인시 좋아요 정보 가져오기
     if (email) {
@@ -321,28 +308,28 @@ app.post("/photo/:id", (req, res) => {
         "SELECT * FROM TB_likesdetail WHERE (user_email = ? && file_name = ?)";
       db.query(sql2, [email, id], (err, result2) => {
         if (err) {
-          console.log("44=="); //---------------------------
+          console.log("55=="); //---------------------------
           return res.status(500).send(err);
         }
-        console.log("55=="); //---------------------------
+        console.log("66=="); //---------------------------
         let heart = false;
 
         if (result2.length === 0) {
           heart = false;
-          console.log("66==", photo); //---------------------------
+          console.log("77==", photo); //---------------------------
         } else {
           heart = result2[0].user_lik;
-          console.log("77==", photo); //---------------------------es;
+          console.log("88==", photo); //---------------------------es;
         }
         result1[0].user_likes = heart;
         const photo = {
           ...result1[0],
           url: `${SV_URL}/uploads/${result1[0].file_name}`,
         };
-        console.log("88==", photo); //---------------------------
+        console.log("99==", photo); //---------------------------
         res.status(200).json(photo);
       });
-      console.log("99==", photo); //---------------------------
+      console.log("100=="); //---------------------------
       // 비 로그인이면
     } else {
       const photo = {

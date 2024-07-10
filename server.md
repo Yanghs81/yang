@@ -84,20 +84,49 @@
 
 10. 서버 서비스 올리기 (cloudtype이용)
 
-- Node js 서비스 생성
+    - Node js 서비스 생성
 
-  - git 저장소 설정 : yang, branch는 메인의 이름 설정
-  - Node js 버전 선택 : v20, 서버 터미널에서 node -v 하면 v 20. 2....식으로 조회되는 버전 선택
-  - 환경변수 세팅 : .env, 탐색기에서 API서버 프로젝트에 있는 .env파일을 클릭으로 끌어서 옮겨줌, 변경필요시 세팅화면에 직접 입력, 503에러 지속되다가 user를 root로 입력하여 해결됨
-  - port : 5000, API서버 포트
-  - Install command : npm ci, package-lock.json을 인스톨함, 공란시 package.json이 인스톨됨
-  - Start command : index.js, API서버프로그램을 지정해야 함
-  - 배포하기 클릭후 서비스로 이동하여 실행로그 확인
+      - git 저장소 설정 : yang, branch는 메인의 이름 설정
+      - Node js 버전 선택 : v20, 서버 터미널에서 node -v 하면 v 20. 2....식으로 조회되는 버전 선택
+      - 환경변수 세팅 : .env, 탐색기에서 API서버 프로젝트에 있는 .env파일을 클릭으로 끌어서 옮겨줌, 변경필요시 세팅화면에 직접 입력, 503에러 지속되다가 user를 root로 입력하여 해결됨
+      - port : 5000, API서버 포트
+      - Install command : npm ci, package-lock.json을 인스톨함, 공란시 package.json이 인스톨됨
+      - Start command : index.js, API서버프로그램을 지정해야 함
+      - 배포하기 클릭후 서비스로 이동하여 실행로그 확인
 
 - API 서버 코딩 변경
   - API 서버의 URL은 서비스 URL로 변경, 포트는 서비스 올릴때 지정한 포트와 listen 포트가 같아야 함 (ex.port=5000)
   - cors는 cors 옵션애 optionsSuccessStatus: 200를 지정해야 함(cloudtype cors설정 참조)
 
-11. 프론트 올리기
+11. API서버 CI/CD 파이프라인 구축
 
-- 로컬에서 리모트 서버와 연결 확인
+- Github Actions를 이용하여 cloudtype에 배포
+
+- Github 저장소에 yml파일 만들기
+
+  - cloudtype에서 Node js 기반 API서버 서비스 배포시 사용되었던 yml 파일 복사
+  - 배포한 서비스의 Github 저장소에서 Actions > Add files 에서 새파일 만들기 클릭
+  - .github/workflows/deploy.yml 을 만들고 내용에 복사한 yml코드 붙여넣고 초록'commit' 클릭
+
+- Github 저장소에 2개의 secret 값 추가하기
+
+  - 첫번째 secret값은 cloudtype 계정의 API키 임
+
+    - cloudtype 설정 > 인증 > 초록'API키 생성' 클릭
+    - 생성된 API키를 복사
+    - Github 저장소에서 Settings 오른쪽 마우스 > '새탭에서 링크 열기' 클릭하고 새탭으로 이동
+    - 새탭 좌측 하단 Secrets and variables > Actions 클릭후 초록'New repository secret' 클릭
+    - Name은 좀전에 만든 deploy.yml의 token행에 적혀있는 이름과 동일하게 입력
+    - 내용에는 복사한 API값 붙여넣기 하고 초록'Add secret' 클릭
+
+  - 두번째 secret값은 사용자 Github 계정의 Personal Aaccess Token 임
+    - 우측상단 노란동그라미 > Settings 클릭
+    - settings 화면 좌측 최하단의 '<> Developer settings' 클릭
+    - Developer settings 화면의 죄측상단 Personal Aaccess Token > Tokens > 우측 상단 Generate New Token > Generate New Token (classic) 클릭
+    - note 는 아무거나.. 나는 'PAT'입력
+    - expiration 도 아무거나.. 나는 30일
+    - Select scopes 에서 repo와 admin:public_key 체크박스 하고 맨아래 초록'Generate token' 클릭
+    - 네모박스 안에 생성된 token 복사 (이하 1번과 비슷)
+    - Github 저장소에서 Settings 클릭 (이하 1번과 비슷)
+    - Name은 좀전에 만든 deploy.yml의 ghtoken행에 적혀있는 이름과 동일하게 입력
+    - 내용에는 복사한 API값 붙여넣기 하고 초록'Add secret' 클릭

@@ -334,6 +334,7 @@ app.post("/photo/:id", (req, res) => {
         };
         res.status(200).json(photo);
       });
+
       // 비 로그인이면
     } else {
       const photo = {

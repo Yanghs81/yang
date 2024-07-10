@@ -103,7 +103,7 @@ const SV_URL = "https://port-0-yang-svc-ly6qcjdff54bee71.sel5.cloudtype.app";
 //   });
 // });
 
-app.get("/", cors(corsOptions), (req, res) => {
+app.get("/", (req, res) => {
   const photo = { url: `${SV_URL}/img/backimg.jpg` };
   res.status(200).json(photo);
 });
@@ -111,7 +111,7 @@ app.get("/", cors(corsOptions), (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////
 // 회원 가입
 ///////////////////////////////////////////////////////////////////////////////////////
-app.post("/signup", cors(corsOptions), (req, res) => {
+app.post("/signup", (req, res) => {
   console.log("Request Origin:", req.get("origin")); // 클라이언트의 출처를 콘솔에 출력
   async function regist() {
     const { email, password, name, nickname } = req.body;
@@ -140,7 +140,7 @@ app.post("/signup", cors(corsOptions), (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////
 // 로그인
 ///////////////////////////////////////////////////////////////////////////////////////
-app.post("/login", cors(corsOptions), (req, res) => {
+app.post("/login", (req, res) => {
   if (req.session.user) {
     return res.status(400).send("Already logged in");
   }
@@ -174,7 +174,7 @@ app.post("/login", cors(corsOptions), (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////
 // 로그 아웃
 ///////////////////////////////////////////////////////////////////////////////////////
-app.get("/logout", cors(corsOptions), (req, res) => {
+app.get("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       return res.status(500).send(err);
@@ -198,47 +198,42 @@ app.get("/checkSession", cors(corsOptions), (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////
 // 사진 올리기
 ///////////////////////////////////////////////////////////////////////////////////////
-app.post(
-  "/uploadPhotos",
-  cors(corsOptions),
-  upload.array("photos", 100),
-  (req, res) => {
-    const files = req.files;
-    const fileNames = req.body.fileNames.split(",");
+app.post("/uploadPhotos", upload.array("photos", 100), (req, res) => {
+  const files = req.files;
+  const fileNames = req.body.fileNames.split(",");
 
-    if (!files || !fileNames) {
-      return res.status(400).send("파일이 업로드되지 않았습니다.");
-    }
-
-    if (files.length !== fileNames.length) {
-      return res.status(400).send("파일 수와 파일명 수가 일치하지 않습니다.");
-    }
-
-    const sql =
-      "INSERT INTO TB_photos (file_name, photo_likes, original_name) VALUES ?";
-    const values = files.map((file, index) => [
-      file.filename,
-      0,
-      fileNames[index],
-    ]);
-
-    db.query(sql, [values], (err, result) => {
-      if (err) {
-        console.error("Database query error:", err);
-        return res.status(500).send(err);
-      }
-      res.status(200).send({
-        message: "파일 업로드 성공",
-        files: files.map((file) => file.filename),
-      });
-    });
+  if (!files || !fileNames) {
+    return res.status(400).send("파일이 업로드되지 않았습니다.");
   }
-);
+
+  if (files.length !== fileNames.length) {
+    return res.status(400).send("파일 수와 파일명 수가 일치하지 않습니다.");
+  }
+
+  const sql =
+    "INSERT INTO TB_photos (file_name, photo_likes, original_name) VALUES ?";
+  const values = files.map((file, index) => [
+    file.filename,
+    0,
+    fileNames[index],
+  ]);
+
+  db.query(sql, [values], (err, result) => {
+    if (err) {
+      console.error("Database query error:", err);
+      return res.status(500).send(err);
+    }
+    res.status(200).send({
+      message: "파일 업로드 성공",
+      files: files.map((file) => file.filename),
+    });
+  });
+});
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // 인기 사진조회
 ///////////////////////////////////////////////////////////////////////////////////////
-app.get("/popularPhotos", cors(corsOptions), (req, res) => {
+app.get("/popularPhotos", (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 5;
   const offset = (page - 1) * limit;
@@ -271,7 +266,7 @@ app.get("/popularPhotos", cors(corsOptions), (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////
 // 최근 사진조회
 ///////////////////////////////////////////////////////////////////////////////////////
-app.get("/recentPhotos", cors(corsOptions), (req, res) => {
+app.get("/recentPhotos", (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 5;
   const offset = (page - 1) * limit;
@@ -292,7 +287,7 @@ app.get("/recentPhotos", cors(corsOptions), (req, res) => {
         ...photo,
         url: `${SV_URL}/uploads/${photo.file_name}`,
       }));
-
+      console.log("photosWithUrls==", photosWithUrls);
       res.status(200).json({
         photos: photosWithUrls,
         total: totalResults[0].count,
@@ -304,7 +299,7 @@ app.get("/recentPhotos", cors(corsOptions), (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////
 // 사진 1장 가져오기
 ///////////////////////////////////////////////////////////////////////////////////////
-app.post("/photo/:id", cors(corsOptions), (req, res) => {
+app.post("/photo/:id", (req, res) => {
   const { id } = req.params;
   const { email } = req.body;
 
@@ -353,7 +348,7 @@ app.post("/photo/:id", cors(corsOptions), (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////
 // 좋아요 업데이트
 ///////////////////////////////////////////////////////////////////////////////////////
-app.post("/photo/:id/like", cors(corsOptions), (req, res) => {
+app.post("/photo/:id/like", (req, res) => {
   const { id } = req.params;
   const { email, heart } = req.body;
 

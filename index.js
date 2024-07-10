@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const mysql = require("mysql");
 const cors = require("cors");
 const multer = require("multer");
+const fs = require("fs");
 const crypto = require("crypto");
 const path = require("path");
 const session = require("express-session");
@@ -75,6 +76,12 @@ db.connect((err) => {
   console.log("MySQL connected...");
 });
 
+// 이미지 파일 올리기
+const uploadDir = path.join(__dirname, "uploads");
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");

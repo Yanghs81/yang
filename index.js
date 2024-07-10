@@ -342,7 +342,7 @@ app.post("/photo/:id", (req, res) => {
         console.log("88==", photo); //---------------------------
         res.status(200).json(photo);
       });
-
+      console.log("99==", photo); //---------------------------
       // 비 로그인이면
     } else {
       const photo = {

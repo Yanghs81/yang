@@ -94,7 +94,7 @@ const SV_URL = "https://port-0-yang-svc-ly6qcjdff54bee71.sel5.cloudtype.app";
 // 홈
 ///////////////////////////////////////////////////////////////////////////////////////
 app.get("/", (req, res) => {
-  const photo = { url: `${SV_URL}/img/backimg.jpg` };
+  const photo = { url: `${SV_URL}/img/homeimg.jpg` };
   res.status(200).json(photo);
 });
 

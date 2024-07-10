@@ -329,15 +329,17 @@ app.post("/photo/:id", (req, res) => {
 
         if (result2.length === 0) {
           heart = false;
+          console.log("66==", photo); //---------------------------
         } else {
-          heart = result2[0].user_likes;
+          heart = result2[0].user_lik;
+          console.log("77==", photo); //---------------------------es;
         }
         result1[0].user_likes = heart;
         const photo = {
           ...result1[0],
           url: `${SV_URL}/uploads/${result1[0].file_name}`,
         };
-        console.log("66==", photo); //---------------------------
+        console.log("88==", photo); //---------------------------
         res.status(200).json(photo);
       });
 

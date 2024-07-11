@@ -317,6 +317,7 @@ app.post("/photo/:id", cors(corsOptions), (req, res) => {
         "SELECT * FROM TB_likesdetail WHERE (user_email = ? && file_name = ?)";
       db.query(sql2, [email, id], (err, result2) => {
         let heart = false;
+        console.log("result2==", result2);
         if (result2) {
           heart = result2[0].user_likes; // 자료있으면 하트여부 가져옴
         } else {

@@ -320,14 +320,10 @@ app.post("/photo/:id", cors(corsOptions), (req, res) => {
         if (err) {
           console.log("TB_likesdetail에 사진을 찾을 수 없습니다-1.");
           heart = false;
-        }
-
-        if (!result2) {
-          console.log("TB_likesdetail에 사진을 찾을 수 없습니다-2.");
-          heart = false; // 자료없으면 false
         } else {
           heart = result2[0].user_likes; // 자료있으면 하트여부 가져옴
         }
+
         result1[0].user_likes = heart;
         const photo = {
           ...result1[0],

@@ -318,7 +318,12 @@ app.post("/photo/:id", cors(corsOptions), (req, res) => {
       db.query(sql2, [email, id], (err, result2) => {
         let heart = false;
         if (err) {
-          console.log("TB_likesdetail에 사진을 찾을 수 없습니다.", email, id);
+          console.log(
+            "TB_likesdetail에 사진을 찾을 수 없습니다.",
+            email,
+            id,
+            err
+          );
           heart = false;
         } else {
           heart = result2[0].user_likes; // 자료있으면 하트여부 가져옴

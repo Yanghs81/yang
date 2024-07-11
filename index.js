@@ -19,7 +19,8 @@ const SV_URL = "https://port-0-yang-svc-ly6qcjdff54bee71.sel5.cloudtype.app";
 
 //cors 설정-------------------------------------------------------------------
 const corsOptions = {
-  origin: "http://localhost:3000", //cors 설정 클라이언트의 주소 사전 허가
+  // origin: "http://localhost:3000", //cors 설정 클라이언트의 주소 사전 허가
+  origin: "https://lgcard.netlify.app",
   optionsSuccessStatus: 200,
   METHODS: ["get", "post"],
   credentials: true, // 쿠키를 포함한 요청을 허용
@@ -306,10 +307,8 @@ app.post("/photo/:id", cors(corsOptions), (req, res) => {
       return res.status(500).send(err);
     }
     if (!result1) {
-      console.log("TB_photos 사진을 찾을 수 없습니다.");
       return res.status(404).send("사진을 찾을 수 없습니다.");
     }
-    console.log("사진있음==", result1.length, "장"); //---------------------------
 
     // 로그인시 좋아요 정보 가져오기
     if (email) {

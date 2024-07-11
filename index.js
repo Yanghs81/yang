@@ -314,7 +314,7 @@ app.post("/photo/:id", cors(corsOptions), (req, res) => {
     // 로그인시 좋아요 정보 가져오기
     if (email) {
       const sql2 =
-        "SELECT * FROM TB_likesdetail WHERE (user_email = ? && file_name = ?)";
+        "SELECT * FROM TB_likesDetail WHERE (user_email = ? && file_name = ?)";
       db.query(sql2, [email, id], (err, result2) => {
         let heart = false;
         console.log("result2==", result2);

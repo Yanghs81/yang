@@ -322,7 +322,7 @@ app.post("/photo/:id", cors(corsOptions), (req, res) => {
           heart = false;
         }
 
-        if (!result2.length) {
+        if (!result2) {
           console.log("TB_likesdetail에 사진을 찾을 수 없습니다-2.");
           heart = false; // 자료없으면 false
         } else {

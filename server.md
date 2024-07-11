@@ -48,6 +48,7 @@
    - mysql : SQL이라고 하는 구조화된 쿼리 언어를 사용하여 데이터를 정의, 조작, 제어, 쿼리하는 관계형 데이터베이스
    - path : 프로그램을 찾는 기본 경로를 담당
    - session-file-store : 세션이 데이터를 저장하는 곳. 대표적으로 Memory Store, File Store, Mongo Store.
+   - fs : 프로젝트 디렉토리 자동 생성
 
 6. index.js에 API서버 로직 구현
 

@@ -299,12 +299,14 @@ app.get("/recentPhotos", cors(corsOptions), (req, res) => {
 app.post("/photo/:id", cors(corsOptions), (req, res) => {
   const { id } = req.params;
   const { email } = req.body;
+  console.log(email, id);
   const sql1 = "SELECT * FROM TB_photos WHERE file_name = ?";
   db.query(sql1, [id], (err, result1) => {
     if (err) {
       return res.status(500).send(err);
     }
     if (!result1) {
+      console.log("TB_photos 사진을 찾을 수 없습니다.");
       return res.status(404).send("사진을 찾을 수 없습니다.");
     }
     console.log("사진있음==", result1.length, "장"); //---------------------------
@@ -316,10 +318,12 @@ app.post("/photo/:id", cors(corsOptions), (req, res) => {
       db.query(sql2, [email, id], (err, result2) => {
         let heart = false;
         if (err) {
+          console.log("TB_likesdetail에 사진을 찾을 수 없습니다-1.");
           heart = false;
         }
 
         if (!result2.length) {
+          console.log("TB_likesdetail에 사진을 찾을 수 없습니다-2.");
           heart = false; // 자료없으면 false
         } else {
           heart = result2[0].user_likes; // 자료있으면 하트여부 가져옴

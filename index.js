@@ -299,13 +299,12 @@ app.get("/recentPhotos", cors(corsOptions), (req, res) => {
 app.post("/photo/:id", cors(corsOptions), (req, res) => {
   const { id } = req.params;
   const { email } = req.body;
-  console.log("11==", email, id); //---------------------------
   const sql1 = "SELECT * FROM TB_photos WHERE file_name = ?";
   db.query(sql1, [id], (err, result1) => {
     if (err) {
       return res.status(500).send(err);
     }
-    if (result1.length === 0) {
+    if (!result1) {
       return res.status(404).send("사진을 찾을 수 없습니다.");
     }
     console.log("사진있음==", result1.length, "장"); //---------------------------

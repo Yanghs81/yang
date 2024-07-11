@@ -25,7 +25,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/img", express.static(path.join(__dirname, "img")));
 
 //비번 암호화
@@ -95,6 +94,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 const SV_URL = "https://port-0-yang-svc-ly6qcjdff54bee71.sel5.cloudtype.app";
 
 ///////////////////////////////////////////////////////////////////////////////////////

@@ -317,16 +317,11 @@ app.post("/photo/:id", cors(corsOptions), (req, res) => {
         "SELECT * FROM TB_likesdetail WHERE (user_email = ? && file_name = ?)";
       db.query(sql2, [email, id], (err, result2) => {
         let heart = false;
-        if (err) {
-          console.log(
-            "TB_likesdetail에 사진을 찾을 수 없습니다.",
-            email,
-            id,
-            err
-          );
-          heart = false;
-        } else {
+        if (result2) {
           heart = result2[0].user_likes; // 자료있으면 하트여부 가져옴
+        } else {
+          console.log("TB_likesdetail에 사진을 찾을 수 없습니다.", email, id);
+          heart = false;
         }
 
         result1[0].user_likes = heart;

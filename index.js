@@ -12,15 +12,25 @@ const FileStore = require("session-file-store")(session);
 const bcrypt = require("bcrypt");
 const app = express();
 
-//기본 환경 설정---------------------------------------------------------------
+//기본 실행 환경 설정---------------------------------------------------------------
 dotenv.config();
 const sever_port = process.env.SERVER_PORT;
-const SV_URL = "https://port-0-yang-svc-ly6qcjdff54bee71.sel5.cloudtype.app";
+
+const LOCAL = false; //1.uploads 파일 정리, 2.웹서비스 환경에서는 false 처리
+
+let APP_URL;
+let SV_URL;
+if (LOCAL) {
+  SV_URL = "http://localhost:5000";
+  APP_URL = "http://localhost:3000";
+} else {
+  SV_URL = "https://port-0-yang-svc-ly6qcjdff54bee71.sel5.cloudtype.app";
+  APP_URL = "https://lgcard.netlify.app";
+}
 
 //cors 설정-------------------------------------------------------------------
 const corsOptions = {
-  // origin: "http://localhost:3000", //cors 설정 클라이언트의 주소 사전 허가
-  origin: "https://lgcard.netlify.app",
+  origin: APP_URL,
   optionsSuccessStatus: 200,
   METHODS: ["get", "post"],
   credentials: true, // 쿠키를 포함한 요청을 허용
@@ -60,16 +70,28 @@ app.use(
 );
 
 // DB 연결---------------------------------------------------------------------
-const db = mysql.createConnection({
-  host: process.env.HOST,
-  port: process.env.PORT,
-  user: process.env.USER,
-  password: process.env.PASSWORD,
-  database: process.env.DB,
-});
+let db;
+if (LOCAL) {
+  db = mysql.createConnection({
+    host: "localhost",
+    port: process.env.PORT,
+    user: "yang",
+    password: "1234",
+    database: "pic_db",
+  });
+} else {
+  db = mysql.createConnection({
+    host: process.env.HOST,
+    port: process.env.PORT,
+    user: process.env.USER,
+    password: process.env.PASSWORD,
+    database: process.env.DB,
+  });
+}
+
 db.connect((err) => {
   if (err) {
-    console.error("MySQL error ==>");
+    console.error("MySQL error ==>", process.env.HOST);
     throw err;
   }
   console.log("MySQL connected...");
@@ -110,6 +132,7 @@ app.get("/", cors(corsOptions), (req, res) => {
 app.post("/signup", cors(corsOptions), (req, res) => {
   async function regist() {
     const { email, password, name, nickname } = req.body;
+
     const enc_password = await hashPassword(password);
     const sql =
       "INSERT INTO TB_users (user_email, user_password, user_name, nick_name, special_code) VALUES (?, ?, ?, ?, ?)";
@@ -198,6 +221,7 @@ app.post(
   (req, res) => {
     const files = req.files;
     const fileNames = req.body.fileNames.split(",");
+    const email = req.body.user;
 
     if (!files || !fileNames) {
       return res.status(400).send("파일이 업로드되지 않았습니다.");
@@ -208,9 +232,10 @@ app.post(
     }
 
     const sql =
-      "INSERT INTO TB_photos (file_name, photo_likes, original_name) VALUES ?";
+      "INSERT INTO TB_photos (file_name, user_email, photo_likes, original_name) VALUES ?";
     const values = files.map((file, index) => [
       file.filename,
+      email,
       0,
       fileNames[index],
     ]);
@@ -295,12 +320,84 @@ app.get("/recentPhotos", cors(corsOptions), (req, res) => {
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////
+// 내가올린 사진 조회
+///////////////////////////////////////////////////////////////////////////////////////
+app.get("/MyPage", cors(corsOptions), (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 5;
+  const email = req.query.user;
+  const offset = (page - 1) * limit;
+
+  const sql = `SELECT * FROM TB_photos WHERE user_email = ? ORDER BY update_date DESC LIMIT ${limit} OFFSET ${offset}`;
+  db.query(sql, [email], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+
+    const totalSql = "SELECT COUNT(*) as count FROM TB_photos";
+    db.query(totalSql, (err, totalResults) => {
+      if (err) {
+        return res.status(500).send(err);
+      }
+
+      const photosWithUrls = results.map((photo) => ({
+        ...photo,
+        url: `${SV_URL}/uploads/${photo.file_name}`,
+      }));
+
+      res.status(200).json({
+        photos: photosWithUrls,
+        total: totalResults[0].count,
+      });
+    });
+  });
+});
+
+///////////////////////////////////////////////////////////////////////////////////////
+// 사진 삭제
+///////////////////////////////////////////////////////////////////////////////////////
+app.post("/deletePhotos", (req, res) => {
+  const { fileNames } = req.body;
+
+  fileNames.forEach((fileName) => {
+    const filePath = path.join(__dirname, "uploads", fileName);
+
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error(`Failed to delete file: ${fileName}`, err);
+      } else {
+        console.log(`Successfully deleted file: ${fileName}`);
+
+        const sql1 = `DELETE FROM TB_likesDetail WHERE file_name = ?`;
+        db.query(sql1, [fileName], (err, result) => {
+          if (err) {
+            console.error(`Failed! TB_likesDetail records: ${fileName}`, err);
+          } else {
+            console.log(`Successed! TB_likesDetail records: ${fileName}`);
+          }
+        });
+
+        const sql2 = `DELETE FROM TB_photos WHERE file_name = ?`;
+        db.query(sql2, [fileName], (err, result) => {
+          if (err) {
+            console.error(`Failed TB_photos records: ${fileName}`, err);
+          } else {
+            console.log(`Successed! TB_photos records: ${fileName}`);
+          }
+        });
+      }
+    });
+  });
+
+  res.status(200).json({ message: "Files deleted successfully" });
+});
+
+///////////////////////////////////////////////////////////////////////////////////////
 // 사진 1장 가져오기
 ///////////////////////////////////////////////////////////////////////////////////////
 app.post("/photo/:id", cors(corsOptions), (req, res) => {
   const { id } = req.params;
   const { email } = req.body;
-  console.log(email, id);
   const sql1 = "SELECT * FROM TB_photos WHERE file_name = ?";
   db.query(sql1, [id], (err, result1) => {
     if (err) {

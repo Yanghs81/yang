@@ -327,7 +327,7 @@ app.get("/MyPage", cors(corsOptions), (req, res) => {
   const limit = parseInt(req.query.limit) || 5;
   const email = req.query.user;
   const offset = (page - 1) * limit;
-
+  console.log("email==", email);
   const sql = `SELECT * FROM TB_photos WHERE user_email = ? ORDER BY update_date DESC LIMIT ${limit} OFFSET ${offset}`;
   db.query(sql, [email], (err, results) => {
     if (err) {

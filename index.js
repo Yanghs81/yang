@@ -16,7 +16,7 @@ const app = express();
 dotenv.config();
 const sever_port = process.env.SERVER_PORT;
 
-const LOCAL = false; //1.uploads 파일 정리, 2.웹서비스 환경에서는 false 처리
+const LOCAL = false; // 1.local: true , 2.웹서비스: false 3.uploads 사진 init
 
 let APP_URL;
 let SV_URL;
@@ -327,15 +327,15 @@ app.get("/MyPage", cors(corsOptions), (req, res) => {
   const limit = parseInt(req.query.limit) || 5;
   const email = req.query.user;
   const offset = (page - 1) * limit;
-  console.log("email==", email);
   const sql = `SELECT * FROM TB_photos WHERE user_email = ? ORDER BY update_date DESC LIMIT ${limit} OFFSET ${offset}`;
   db.query(sql, [email], (err, results) => {
     if (err) {
       return res.status(500).send(err);
     }
 
-    const totalSql = "SELECT COUNT(*) as count FROM TB_photos";
-    db.query(totalSql, (err, totalResults) => {
+    const totalSql =
+      "SELECT COUNT(*) as count FROM TB_photos WHERE user_email = ? ";
+    db.query(totalSql, [email], (err, totalResults) => {
       if (err) {
         return res.status(500).send(err);
       }

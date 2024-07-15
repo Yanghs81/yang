@@ -16,7 +16,7 @@ const app = express();
 dotenv.config();
 const sever_port = process.env.SERVER_PORT;
 
-const LOCAL = false; // 1.local: true , 2.웹서비스: false 3.uploads 사진 init
+const LOCAL = true; // 1.local: true , 2.웹서비스: false 3.uploads 사진 init
 
 let APP_URL;
 let SV_URL;
@@ -157,6 +157,7 @@ app.post("/signup", cors(corsOptions), (req, res) => {
 // 로그인
 ///////////////////////////////////////////////////////////////////////////////////////
 app.post("/login", cors(corsOptions), (req, res) => {
+  console.log("session=", req.body, req.session.user);
   if (req.session.user) {
     return res.status(400).send("Already logged in");
   }

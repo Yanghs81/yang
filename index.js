@@ -16,7 +16,7 @@ const app = express();
 dotenv.config();
 const sever_port = process.env.SERVER_PORT;
 
-const LOCAL = true; // 1.local: true , 2.웹서비스: false 3.uploads 사진 init
+const LOCAL = false; // 1.local: true , 2.웹서비스: false 3.uploads 사진 init
 
 let APP_URL;
 let SV_URL;

@@ -157,7 +157,7 @@ app.post("/signup", cors(corsOptions), (req, res) => {
 // 로그인
 ///////////////////////////////////////////////////////////////////////////////////////
 app.post("/login", cors(corsOptions), (req, res) => {
-  console.log("session=", req.body, req.session.user);
+  console.log("session시작", req.body, req.session.user);
   if (req.session.user) {
     return res.status(400).send("Already logged in");
   }
@@ -183,6 +183,7 @@ app.post("/login", cors(corsOptions), (req, res) => {
         nickName: user.nick_name,
       };
       const data = req.session;
+      console.log("session끝", req.session);
       res.status(200).send(data);
     });
   });

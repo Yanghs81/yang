@@ -60,6 +60,15 @@
    - 기동/해제 자동화 : Nodemon 모듈 설치
 
 8. maria db 서비스 올리기 (cloudtype이용)
+  - maria db 생성
+    - mariadb.com 에서 db 다운로드후 setup파일 실행
+    - 찾기창에서 mysql client 찾아서 실행
+      - root pwd 입력
+      - create database [name]; - cmd
+      - create user yang@localhost identified by '비번';
+      - GRANT ALL PRIVILEGES ON [db name].* TO [name]@localhost;
+      - 찾기창에서 HeidiSQL 찾아서 실행
+    - 
 
    - mariadb 서비스 생성
 

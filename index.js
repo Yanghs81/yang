@@ -16,11 +16,13 @@ const app = express();
 dotenv.config();
 const sever_port = process.env.SERVER_PORT;
 
-const LOCAL = false; // 1.local: true , 2.웹서비스: false 3.uploads 사진 init
+const LOCAL = true; // 1.local: true , 2.웹서비스: false 3.uploads 사진 init
 
 let APP_URL;
 let SV_URL;
 if (LOCAL) {
+  // SV_URL = "http://192.168.0.24";
+  // APP_URL = "https://lgcard.netlify.app";
   SV_URL = "http://localhost:5000";
   APP_URL = "http://localhost:3000";
 } else {
@@ -74,24 +76,24 @@ let db;
 if (LOCAL) {
   db = mysql.createConnection({
     host: "localhost",
-    port: process.env.PORT,
+    port: process.env.DB_PORT,
     user: "yang",
-    password: "1234",
-    database: "pic_db",
+    password: "1111",
+    database: "picdb",
   });
 } else {
   db = mysql.createConnection({
-    host: process.env.HOST,
-    port: process.env.PORT,
-    user: process.env.USER,
-    password: process.env.PASSWORD,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     database: process.env.DB,
   });
 }
 
 db.connect((err) => {
   if (err) {
-    console.error("MySQL error ==>", process.env.HOST);
+    console.error("MySQL error ==>", process.env.DB_HOST);
     throw err;
   }
   console.log("MySQL connected...");
@@ -133,12 +135,12 @@ app.post("/signup", cors(corsOptions), (req, res) => {
   async function regist() {
     const { email, password, name, nickname } = req.body;
 
-    const enc_password = await hashPassword(password);
+    const enc_pwd = await hashPassword(password);
     const sql =
-      "INSERT INTO TB_users (user_email, user_password, user_name, nick_name, special_code) VALUES (?, ?, ?, ?, ?)";
-    db.query(
+      "INSERT INTO TB_users (user_email, user_name, user_nickname, user_pwd, user_grade) VALUES (?, ?, ?, ?, ?)";
+      db.query(
       sql,
-      [email, enc_password, name, nickname, "00"],
+      [email, name, nickname, enc_pwd, "00"],
       (err, result) => {
         if (err) {
           return res.status(500).send(err);
@@ -173,7 +175,7 @@ app.post("/login", cors(corsOptions), (req, res) => {
     }
 
     const user = results[0];
-    const isMatch = await bcrypt.compare(password, user.user_password);
+    const isMatch = await bcrypt.compare(password, user.user_pwd);
     if (!isMatch) {
       return res.status(401).send("password not matched");
     }
@@ -296,7 +298,7 @@ app.get("/recentPhotos", cors(corsOptions), (req, res) => {
   const limit = parseInt(req.query.limit) || 5;
   const offset = (page - 1) * limit;
 
-  const sql = `SELECT * FROM TB_photos ORDER BY update_date DESC LIMIT ${limit} OFFSET ${offset}`;
+  const sql = `SELECT * FROM TB_photos ORDER BY create_date DESC LIMIT ${limit} OFFSET ${offset}`;
   db.query(sql, (err, results) => {
     if (err) {
       return res.status(500).send(err);
@@ -329,7 +331,7 @@ app.get("/MyPage", cors(corsOptions), (req, res) => {
   const limit = parseInt(req.query.limit) || 5;
   const email = req.query.user;
   const offset = (page - 1) * limit;
-  const sql = `SELECT * FROM TB_photos WHERE user_email = ? ORDER BY update_date DESC LIMIT ${limit} OFFSET ${offset}`;
+  const sql = `SELECT * FROM TB_photos WHERE user_email = ? ORDER BY create_date DESC LIMIT ${limit} OFFSET ${offset}`;
   db.query(sql, [email], (err, results) => {
     if (err) {
       return res.status(500).send(err);
@@ -507,7 +509,7 @@ app.post("/photo/:id/like", cors(corsOptions), (req, res) => {
         // UPDATE
         else {
           const updateSql =
-            "UPDATE TB_likesDetail SET user_likes = ?, update_date = ? WHERE (user_email = ? AND file_name = ?)";
+            "UPDATE TB_likesDetail SET user_likes = ?, create_date = ? WHERE (user_email = ? AND file_name = ?)";
           db.query(
             updateSql,
             [heart, formattedDate, email, id],
